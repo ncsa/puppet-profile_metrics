@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'profile_metrics::ssh' do
+describe 'profile_metrics_alerting::ssh' do
   on_supported_os.each do |os, os_facts|
     context "on #{os}" do
       let(:facts) { os_facts }

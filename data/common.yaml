@@ -1,10 +1,35 @@
 ---
-profile_metrics::cilogon_client_id: ""
-profile_metrics::cilogon_client_secret: ""
-profile_metrics::db_name: "grafana"
-profile_metrics::db_passwd: ""
-profile_metrics::db_user: "grafana"
-profile_metrics::grafana_server_root_url: "https://%{facts.fqdn}"
+profile_metrics_alerting::cilogon_client_id: ""
+profile_metrics_alerting::cilogon_client_secret: ""
+profile_metrics_alerting::db_name: "grafana"
+profile_metrics_alerting::db_passwd: "CHANGEME"
+profile_metrics_alerting::db_user: "grafana"
+profile_metrics_alerting::grafana_server_root_url: "https://%{facts.fqdn}"
+profile_metrics_alerting::grafana_version: "installed"
 
-profile_metrics::ssh::metrics_node_ips:
+profile_metrics_alerting::ssh::metrics_node_ips:
   - "127.0.0.1"
+profile_metrics_alerting::ssh::sshkey_priv: ""
+profile_metrics_alerting::ssh::sshkey_pub: ""
+profile_metrics_alerting::ssh::sshkey_type: "rsa"
+
+profile_metrics_alerting::tools::backup_and_sync_cron_hour: "4"
+profile_metrics_alerting::tools::backup_and_sync_cron_minute: "0"
+profile_metrics_alerting::tools::backup_and_sync_cron_month: "*"
+profile_metrics_alerting::tools::backup_and_sync_cron_monthday: "*"
+profile_metrics_alerting::tools::backup_and_sync_cron_weekday: "*"
+profile_metrics_alerting::tools::backup_and_sync_destination_host: ""
+profile_metrics_alerting::tools::backup_and_sync_destination_path: "/tmp"
+profile_metrics_alerting::tools::backup_and_sync_enable: false
+profile_metrics_alerting::tools::grafana_admin_password: "CHANGEME"
+profile_metrics_alerting::tools::grafana_admin_user: "admin"
+profile_metrics_alerting::tools::ldap_sync_base_dir: "/root/grafana_tools/ldap_sync"
+profile_metrics_alerting::tools::ldap_sync_cron_hour: "*"
+profile_metrics_alerting::tools::ldap_sync_cron_minute: "*/20"
+profile_metrics_alerting::tools::ldap_sync_cron_month: "*"
+profile_metrics_alerting::tools::ldap_sync_cron_monthday: "*"
+profile_metrics_alerting::tools::ldap_sync_cron_weekday: "*"
+profile_metrics_alerting::tools::ldap_sync_enable: true
+profile_metrics_alerting::tools::ldap_sync_groups: []
+profile_metrics_alerting::tools::whitelabel_subtitle: ""
+profile_metrics_alerting::tools::whitelabel_title: ""

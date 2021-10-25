@@ -1,4 +1,4 @@
-# @summary Configure metrics services
+# @summary Configure metrics grafana services
 #
 # @param cilogon_client_id
 #   CILogon OIDC client ID
@@ -18,15 +18,19 @@
 # @param grafana_server_root_url
 #   root_url for grafana server including protocol
 #
+# @param grafana_version
+#   optional version of grafana installed
+#
 # @example
-#   include profile_metrics
-class profile_metrics (
+#   include profile_metrics_alerting
+class profile_metrics_alerting (
   String $cilogon_client_id,
   String $cilogon_client_secret,
   String $db_name,
   String $db_passwd,
   String $db_user,
   String $grafana_server_root_url,
+  String $grafana_version,
 ) {
 
   # HTTPD PROXY
@@ -41,41 +45,38 @@ class profile_metrics (
     user     => $db_user,
     password => $db_passwd,
     host     => 'localhost',
+    charset  => 'utf8mb4',
+    collate  => 'utf8mb4_general_ci',
   }
 
   # GRAFANA SERVICE
   class { 'grafana':
-    cfg => {
-      alerting           => {
+    cfg     => {
+      alerting             => {
         enabled => true,
       },
-      analytics          => {
+      analytics            => {
         reporting => true,
       },
-      auth               => {
+      auth                 => {
         login_maximum_inactive_lifetime_duration => '9h',
         login_maximum_lifetime_duration          => '7d',
         disable_login_form                       => true,
         disable_signout_menu                     => true,
       },
-      auth.anonymous     => {
+      'auth.anonymous'     => {
         enabled      => true,
         hide_version => true,
         org_name     => 'NCSA',
         org_role     => 'Viewer',
       },
-      auth.basic         => {
+      'auth.basic'         => {
         enabled => true,
       },
-      auth.ldap          => {
-        allow_sign_up => true,
-        config_file   => '/etc/grafana/ldap.toml',
-        enabled       => false,
-      },
-      auth.generic_oauth => {
+      'auth.generic_oauth' => {
         allow_sign_up        => true,
-        api_url              => 'https://test.cilogon.org/oauth2/userinfo',
-        auth_url             => 'https://test.cilogon.org/authorize',
+        api_url              => 'https://cilogon.org/oauth2/userinfo',
+        auth_url             => 'https://cilogon.org/authorize',
         client_id            => $cilogon_client_id,
         client_secret        => $cilogon_client_secret,
         enabled              => true,
@@ -83,38 +84,45 @@ class profile_metrics (
         name                 => 'NCSA CILogon',
         role_attribute_path  => 'contains(isMemberOf[*], \'ici_monitoring_admin\') && \'Admin\' || \'Viewer\'',
         scopes               => 'openid,email,profile,org.cilogon.userinfo',
-        token_url            => 'https://test.cilogon.org/oauth2/token',
+        token_url            => 'https://cilogon.org/oauth2/token',
       },
-      database           => {
+      'auth.ldap'          => {
+#        allow_sign_up => true,
+#        config_file   => '/etc/grafana/ldap.toml',
+        enabled       => false,
+      },
+      database             => {
         type     => 'mysql',
         host     => '127.0.0.1:3306',
         name     => $db_name,
         user     => $db_user,
         password => $db_passwd,
       },
-      explore            => {
+      explore              => {
         enabled => false,
       },
-      live               => {
+      live                 => {
         allowed_origins => '*',
       },
-      server             => {
+      server               => {
         root_url => $grafana_server_root_url,
       },
-      smtp               => {
+      smtp                 => {
         enabled      => true,
-        from_address => 'root@metrics02.ncsa.illinois.edu',
+        from_address => "root@${$facts['fqdn']}",
         from_name    => 'NCSA ICI Alert Engine',
         host         => 'localhost:25',
         skip_verify  => true,
       },
-      users              => {
+      users                => {
         allow_sign_up    => false,
         allow_org_create => false,
       },
     },
+    version => $grafana_version,
   }
-  # ANY NCSA CUSTOMIZATION
 
-  include profile_metrics::ssh
+  include profile_metrics_alerting::ssh
+  include profile_metrics_alerting::tools
+
 }
