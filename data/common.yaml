@@ -1,0 +1,10 @@
+---
+profile_metrics::cilogon_client_id: ""
+profile_metrics::cilogon_client_secret: ""
+profile_metrics::db_name: "grafana"
+profile_metrics::db_passwd: ""
+profile_metrics::db_user: "grafana"
+profile_metrics::grafana_server_root_url: "https://%{facts.fqdn}"
+
+profile_metrics::ssh::metrics_node_ips:
+  - "127.0.0.1"
