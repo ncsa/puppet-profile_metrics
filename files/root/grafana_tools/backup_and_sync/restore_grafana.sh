@@ -1,5 +1,7 @@
 #!/bin/bash
 
+pushd $(dirname "$0")
+
 ## Source file from argument
 source_file=$1
 
@@ -25,3 +27,5 @@ else
 	echo "Invalid/No Database type found; please inspect you grafana.ini file"
 	exit 1
 fi
+
+popd

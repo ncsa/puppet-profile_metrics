@@ -1,5 +1,7 @@
 #!/bin/bash
 
+pushd $(dirname "$0")
+
 if [ -z $1 ]; then
 	set -- $1 "regular"
 fi
@@ -187,3 +189,5 @@ do
                 fi
 	fi
 done
+
+popd

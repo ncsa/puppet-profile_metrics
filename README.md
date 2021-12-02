@@ -49,6 +49,45 @@ profile_metrics_alerting::tools::whitelabel_subtitle: "Managed by ORGANIZATION G
 profile_metrics_alerting::tools::whitelabel_title: "Monitoring and Telemetry Interface"
 ```
 
+To pause/start alerts on a schedule (applicable for old style alerts only), you can use these parameters:
+```yaml
+# Format for command is similar to running alert_toggle.sh by hand, see README in files/root/grafana_tools
+profile_metrics_alerting::alert_cycle::crons:
+   "Pause mforgehn1 alerts":
+    command: "pause tag \"mforgehn1\""
+    hour: 21
+    minute: 55
+    weekday: 0
+  "Start mforgehn1 alerts":
+    command: "start tag \"mforgehn1\""
+    hour: 0
+    minute: 45
+    weekday: 1
+profile_metrics_alerting::alert_cycle::enable_cycle_alerts: true
+```
+You'll want to define your crons for `profile_metrics_alerting::alert_cycle::crons` in any role that uses this repo (For example if you have a primary/secondary role). This is because if you swap roles you want the alert pausing/starting crons to be removed from the secondary role so you don't get alerts enabled in multiple places leading to duplicate alerts. 
+
+## Initial Restoration of Grafana Database
+
+After the initial setup make use of the [grafana_tools](https://github.com/jdmaloney/grafana_tools/) 
+[backup_and_sync](https://github.com/jdmaloney/grafana_tools/blob/main/backup_and_sync/README.md) 
+scripts to do one of the following:
+- restore data from a backup, or
+- sync from another Grafana server
+
+## Dependencies
+
+- [ncsa/sshd](https://github.com/ncsa/puppet-sshd)
+- [puppet/grafana](https://forge.puppet.com/modules/puppet/grafana)
+- [puppetlabs/mysql](https://forge.puppet.com/modules/puppetlabs/mysql)
+
+## Reference
+
+### class profile_metrics_alerting::ssh (
+-  Array[String] $metrics_node_ips,
+-  String $sshkey_pub,
+-  String $sshkey_priv,
+-  String $sshkey_type,
 ### class profile_metrics_alerting::tools (
 -  String $backup_and_sync_cron_hour,
 -  String $backup_and_sync_cron_minute,
@@ -70,11 +109,10 @@ profile_metrics_alerting::tools::whitelabel_title: "Monitoring and Telemetry Int
 -  Array[String] $ldap_sync_groups,
 -  String $whitelabel_subtitle,
 -  String $whitelabel_title,
-### class profile_metrics_alerting::ssh (
--  Array[String] $metrics_node_ips,
--  String $sshkey_pub,
--  String $sshkey_priv,
--  String $sshkey_type,
+### class profile_metrics_alerting::alert_cycle (
+-  Hash $crons,
+-  Boolean $enable_cycle_alerts,
+-  String $script_path,
 ### class profile_metrics_alerting (
 -  String $cilogon_client_id,
 -  String $cilogon_client_secret,
@@ -83,22 +121,6 @@ profile_metrics_alerting::tools::whitelabel_title: "Monitoring and Telemetry Int
 -  String $db_user,
 -  String $grafana_server_root_url,
 -  String $grafana_version,
-
-## Initial Restoration of Grafana Database
-
-After the initial setup make use of the [grafana_tools](https://github.com/jdmaloney/grafana_tools/) 
-[backup_and_sync](https://github.com/jdmaloney/grafana_tools/blob/main/backup_and_sync/README.md) 
-scripts to do one of the following:
-- restore data from a backup, or
-- sync from another Grafana server
-
-## Dependencies
-
-- [ncsa/sshd](https://github.com/ncsa/puppet-sshd)
-- [puppet/grafana](https://forge.puppet.com/modules/puppet/grafana)
-- [puppetlabs/mysql](https://forge.puppet.com/modules/puppetlabs/mysql)
-
-## Reference
 
 [REFERENCE.md](REFERENCE.md)
 
