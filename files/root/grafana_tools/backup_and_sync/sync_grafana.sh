@@ -1,5 +1,7 @@
 #!/bin/bash
 
+pushd $(dirname "$0")
+
 ## Fill in destination_host and db information if using mysql
 source ./config
 
@@ -28,3 +30,5 @@ else
 	echo "Invalid/No Database type found; please inspect you grafana.ini file"
 	exit 1
 fi
+
+popd

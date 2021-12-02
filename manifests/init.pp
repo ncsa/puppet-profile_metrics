@@ -122,6 +122,7 @@ class profile_metrics_alerting (
     version => $grafana_version,
   }
 
+  include profile_metrics_alerting::alert_cycle
   include profile_metrics_alerting::ssh
   include profile_metrics_alerting::tools
 

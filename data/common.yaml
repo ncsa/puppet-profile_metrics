@@ -1,4 +1,8 @@
 ---
+profile_metrics_alerting::alert_cycle::crons: {}
+profile_metrics_alerting::alert_cycle::enable_cycle_alerts: false
+profile_metrics_alerting::alert_cycle::script_path: "/root/grafana_tools/bulk_alert/alert_toggle.sh"
+
 profile_metrics_alerting::cilogon_client_id: ""
 profile_metrics_alerting::cilogon_client_secret: ""
 profile_metrics_alerting::db_name: "grafana"

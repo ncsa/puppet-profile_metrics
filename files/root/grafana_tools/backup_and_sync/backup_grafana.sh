@@ -1,5 +1,7 @@
 #!/bin/bash
 
+pushd $(dirname "$0")
+
 ## Fill in destination host/path variables and db info if necessary
 source ./config
 
@@ -22,3 +24,5 @@ else
 	echo "Invalid/No Database type found; please inspect you grafana.ini file"
 	exit 1
 fi
+
+popd

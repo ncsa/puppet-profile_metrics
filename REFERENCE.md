@@ -7,6 +7,7 @@
 ### Classes
 
 * [`profile_metrics_alerting`](#profile_metrics_alerting): Configure metrics grafana services
+* [`profile_metrics_alerting::alert_cycle`](#profile_metrics_alertingalert_cycle): Pauses and starts (cycles) alerts on a schedule
 * [`profile_metrics_alerting::ssh`](#profile_metrics_alertingssh): Allow ssh between metrics servers
 * [`profile_metrics_alerting::tools`](#profile_metrics_alertingtools): Install and configure grafana_tools
 
@@ -77,6 +78,37 @@ root_url for grafana server including protocol
 Data type: `String`
 
 optional version of grafana installed
+
+### <a name="profile_metrics_alertingalert_cycle"></a>`profile_metrics_alerting::alert_cycle`
+
+Pauses and starts (cycles) alerts on a schedule
+
+#### Parameters
+
+The following parameters are available in the `profile_metrics_alerting::alert_cycle` class:
+
+* [`crons`](#crons)
+* [`enable_cycle_alerts`](#enable_cycle_alerts)
+* [`script_path`](#script_path)
+
+##### <a name="crons"></a>`crons`
+
+Data type: `Hash`
+
+Hash of CRON entries for pausing/starting alerts.
+For the command key, the path to a alert_toggle script should be omitted
+
+##### <a name="enable_cycle_alerts"></a>`enable_cycle_alerts`
+
+Data type: `Boolean`
+
+Enable or disable the cycling of alerts
+
+##### <a name="script_path"></a>`script_path`
+
+Data type: `String`
+
+Path to the alert_toggle.sh script
 
 ### <a name="profile_metrics_alertingssh"></a>`profile_metrics_alerting::ssh`
 

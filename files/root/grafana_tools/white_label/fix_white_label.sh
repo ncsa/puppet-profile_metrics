@@ -1,5 +1,7 @@
 #!/bin/bash
 
+pushd $(dirname "$0")
+
 ##
 ## Set what you want your title and the subtitle to be
 ## keep the double quotes around them
@@ -26,3 +28,5 @@ do
 done
 
 systemctl restart grafana-server
+
+popd

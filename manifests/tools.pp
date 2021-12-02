@@ -172,7 +172,7 @@ class profile_metrics_alerting::tools (
   # ADD CRONS FOR SYNC SCRIPTS
   if ( $backup_and_sync_enable ) {
     cron { 'Grafana_tools backup_and_sync sync_grafana':
-      command  => '( cd /root/grafana_tools/backup_and_sync/ && ./sync_grafana.sh ) 2>&1',
+      command  => '/root/grafana_tools/backup_and_sync/sync_grafana.sh 2>&1',
       user     => 'root',
       hour     => $backup_and_sync_cron_hour,
       minute   => $backup_and_sync_cron_minute,
@@ -188,7 +188,7 @@ class profile_metrics_alerting::tools (
   }
   if ( $ldap_sync_enable ) {
     cron { 'Grafana_tools ldap_sync':
-      command  => '( cd /root/grafana_tools/ldap_sync/ && ./sync.sh ) 2>&1',
+      command  => '/root/grafana_tools/ldap_sync/sync.sh 2>&1',
       user     => 'root',
       hour     => $ldap_sync_cron_hour,
       minute   => $ldap_sync_cron_minute,
