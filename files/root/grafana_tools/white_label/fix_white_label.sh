@@ -1,6 +1,6 @@
 #!/bin/bash
 
-pushd $(dirname "$0")
+pushd $(dirname "$0") > /dev/null
 
 ##
 ## Set what you want your title and the subtitle to be
@@ -29,4 +29,4 @@ done
 
 systemctl restart grafana-server
 
-popd
+popd > /dev/null

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-pushd $(dirname "$0")
+pushd $(dirname "$0") > /dev/null
 
 ## Fill in destination_host and db information if using mysql
 source ./config
@@ -31,4 +31,4 @@ else
 	exit 1
 fi
 
-popd
+popd > /dev/null
