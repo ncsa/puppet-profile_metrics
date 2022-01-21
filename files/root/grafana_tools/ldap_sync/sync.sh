@@ -1,6 +1,6 @@
 #!/bin/bash
 
-pushd $(dirname "$0")
+pushd $(dirname "$0") > /dev/null
 
 if [ -z $1 ]; then
 	set -- $1 "regular"
@@ -190,4 +190,4 @@ do
 	fi
 done
 
-popd
+popd > /dev/null

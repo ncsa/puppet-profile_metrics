@@ -1,6 +1,6 @@
 #!/bin/bash
 
-pushd $(dirname "$0")
+pushd $(dirname "$0") > /dev/null
 
 ## Source file from argument
 source_file=$1
@@ -28,4 +28,4 @@ else
 	exit 1
 fi
 
-popd
+popd > /dev/null

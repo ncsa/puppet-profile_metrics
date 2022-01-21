@@ -4,7 +4,7 @@ action=$1
 grouping=$2
 tag_or_id=$3
 
-pushd $(dirname "$0")
+pushd $(dirname "$0") > /dev/null
 source ./config
 
 if [ "$1" == "-h" ] || [ -z "$1" ] || [ -z "$2" ] || [ -z "$3" ]; then
@@ -99,4 +99,4 @@ else
 	echo "Invalid option, choose tag or id for second argument"
 fi
 
-popd
+popd > /dev/null

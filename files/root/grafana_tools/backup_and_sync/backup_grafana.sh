@@ -1,6 +1,6 @@
 #!/bin/bash
 
-pushd $(dirname "$0")
+pushd $(dirname "$0") > /dev/null
 
 ## Fill in destination host/path variables and db info if necessary
 source ./config
@@ -25,4 +25,4 @@ else
 	exit 1
 fi
 
-popd
+popd > /dev/null
