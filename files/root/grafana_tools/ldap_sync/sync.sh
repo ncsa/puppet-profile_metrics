@@ -17,7 +17,7 @@ do
 	if [ $1 == "--debug" ]; then
 		echo "Validating Group ${g} is still in LDAP"
 	fi
-        if [ -z "$(/usr/bin/ldapsearch -x "(cn=${g})" -b ou=groups,dc=ncsa,dc=illinois,dc=edu | grep uniqueMember)" ]; then
+	if [ -z "$(/usr/bin/ldapsearch -x "(cn=${g})" -b ou=groups,dc=ncsa,dc=illinois,dc=edu | grep uniqueMember)" ]; then
 		## Remove Team
 		if [ $1 == "--debug" ]; then
 			echo "Group ${g} No Longer in LDAP"
