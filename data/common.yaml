@@ -35,5 +35,7 @@ profile_metrics_alerting::tools::ldap_sync_cron_monthday: "*"
 profile_metrics_alerting::tools::ldap_sync_cron_weekday: "*"
 profile_metrics_alerting::tools::ldap_sync_enable: true
 profile_metrics_alerting::tools::ldap_sync_groups: []
+profile_metrics_alerting::tools::ldap_sync_group_search_base: ""
+profile_metrics_alerting::tools::ldap_sync_user_search_base: ""
 profile_metrics_alerting::tools::whitelabel_subtitle: ""
 profile_metrics_alerting::tools::whitelabel_title: ""

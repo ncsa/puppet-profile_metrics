@@ -15,16 +15,14 @@ class profile_metrics_alerting::alert_cycle (
   Boolean $enable_cycle_alerts,
   String $script_path,
 ) {
-
   Cron {
     user => 'root',
   }
 
   if ($enable_cycle_alerts) {
     $crons.each | $k, $v | {
-
       # Create new hash with command set how we want it
-      $override = {'command' => "${script_path} ${v[command]}"}
+      $override = { 'command' => "${script_path} ${v[command]}" }
 
       # Merge hashes, hash on right overrides hash on left when keys are shared in both hashes
       $result = $v + $override
@@ -36,5 +34,4 @@ class profile_metrics_alerting::alert_cycle (
       cron { $k: ensure => absent }
     }
   }
-
 }

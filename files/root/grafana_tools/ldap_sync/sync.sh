@@ -17,7 +17,7 @@ do
 	if [ $1 == "--debug" ]; then
 		echo "Validating Group ${g} is still in LDAP"
 	fi
-	if [ -z "$(/usr/bin/ldapsearch -x "(cn=${g})" -b ou=groups,dc=ncsa,dc=illinois,dc=edu | grep uniqueMember)" ]; then
+	if [ -z "$(/usr/bin/ldapsearch -x "(cn=${g})" -b ${ldap_group_search_base} | grep uniqueMember)" ]; then
 		## Remove Team
 		if [ $1 == "--debug" ]; then
 			echo "Group ${g} No Longer in LDAP"
@@ -73,7 +73,7 @@ do
 	if [ $1 == "--debug" ]; then
 		echo "Getting users in group ${g}"
 	fi
-	/usr/bin/ldapsearch -x "(cn=${g})" -b ou=groups,dc=ncsa,dc=illinois,dc=edu | grep uniqueMember | cut -d'=' -f 2 | cut -d',' -f 1 >> ${tfile}
+	/usr/bin/ldapsearch -x "(cn=${g})" -b ${ldap_group_search_base} | grep uniqueMember | cut -d'=' -f 2 | cut -d',' -f 1 >> ${tfile}
 done
 
 unique_ldap_users=($(cat ${tfile} | sort -u))
@@ -89,7 +89,7 @@ do
 		if [ $1 == "--debug" ]; then
 			echo "Adding User ${u} to Grafana"
 		fi
-		pretty_name=$(/usr/bin/ldapsearch -x "(uid=${u})" -b ou=people,dc=ncsa,dc=illinois,dc=edu | grep "cn:" | cut -d' ' -f 2-)
+		pretty_name=$(/usr/bin/ldapsearch -x "(uid=${u})" -b ${ldap_user_search_base} | grep "cn:" | cut -d' ' -f 2-)
 		email_addr=$(/usr/bin/ldapsearch -x uid=${u} mail | grep "mail:" | head -n 1 | cut -d' ' -f 2)
 		rp=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)
 		cat ${base_dir}/add_user_template.json | sed "s/NewUsersNameHere/${pretty_name}/" | sed "s/NewUserIDHere/${u}/" | sed "s/RandomPasswordHere/${rp}/" | sed "s/NewUserEmailHere/${email_addr}/"  > add_user.json
@@ -112,7 +112,7 @@ do
 	t_members=($(cat ${tfile} | grep orgId | sed -e 's/[{}]/''/g' |  awk -v k="text" '{n=split($0,a,","); for (i=1; i<=n; i++) print a[i]}' | grep login | cut -d'"' -f 4))
 	rm -rf ${tfile}
 	## Get that team's real LDAP list
-	l_members=($(/usr/bin/ldapsearch -x "(cn=${name})" -b ou=groups,dc=ncsa,dc=illinois,dc=edu | grep uniqueMember | cut -d'=' -f 2 | cut -d',' -f 1))
+	l_members=($(/usr/bin/ldapsearch -x "(cn=${name})" -b ${ldap_group_search_base} | grep uniqueMember | cut -d'=' -f 2 | cut -d',' -f 1))
 
 	## Check if any users need added to team and add them if so
 	for l in ${l_members[@]}

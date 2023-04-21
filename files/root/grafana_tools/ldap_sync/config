@@ -1,3 +1,5 @@
 base_dir=""
 admin_password=""
 groups=()
+ldap_user_search_base=""
+ldap_group_search_base=""
