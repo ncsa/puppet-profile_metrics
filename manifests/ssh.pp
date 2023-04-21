@@ -20,7 +20,6 @@ class profile_metrics_alerting::ssh (
   String $sshkey_priv,
   String $sshkey_type,
 ) {
-
   # NEED TO SETUP SOME SSH KEYS USED FOR SYNCING DATA BETWEEN METRICS HOSTS
 
   # Secure sensitive data to prevent it showing in logs
@@ -37,7 +36,7 @@ class profile_metrics_alerting::ssh (
     owner   => root,
     group   => root,
     mode    => '0600',
-    require =>  File[ $sshdir ],
+    require => File[$sshdir],
   }
 
   # Define unique parameters of each resource
@@ -66,7 +65,6 @@ class profile_metrics_alerting::ssh (
     key    => $pubkey,
   }
 
-
   # SSHD CONFIGURATION
 
   $params = {
@@ -77,10 +75,9 @@ class profile_metrics_alerting::ssh (
     'X11Forwarding'         => 'no',
   }
 
-  ::sshd::allow_from{ 'sshd allow root for metrics nodes':
+  ::sshd::allow_from { 'sshd allow root for metrics nodes':
     hostlist                => $metrics_node_ips,
-    users                   => [ 'root' ],
+    users                   => ['root'],
     additional_match_params => $params,
   }
-
 }

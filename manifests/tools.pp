@@ -40,6 +40,10 @@
 #   Whether or not ldap_sync script is automated
 # @param ldap_sync_groups
 #   List of ldap groups to sync to Grafana
+# @param ldap_sync_group_search_base
+#   Base filter for ldap group search
+# @param ldap_sync_user_search_base
+#   Base filter for ldap user search
 #
 # @param whitelabel_subtitle
 #   Custom subtitle applied to Grafana instance
@@ -67,10 +71,12 @@ class profile_metrics_alerting::tools (
   String $ldap_sync_cron_weekday,
   Boolean $ldap_sync_enable,
   Array[String] $ldap_sync_groups,
+  String $ldap_sync_group_search_base,
+  String $ldap_sync_user_search_base,
+
   String $whitelabel_subtitle,
   String $whitelabel_title,
 ) {
-
   file { '/root/grafana_tools':
     ensure  => directory,
     #notify  => Exec['ensure_grafana_tools_scripts_executable'],
@@ -109,17 +115,17 @@ class profile_metrics_alerting::tools (
   }
   file_line { 'backup_and_sync/config db':
     path  => '/root/grafana_tools/backup_and_sync/config',
-    line  => "db=${::profile_metrics_alerting::db_name}",
+    line  => "db=${profile_metrics_alerting::db_name}",
     match => '^db=.*|^db\s.*',
   }
   file_line { 'backup_and_sync/config db_password':
     path  => '/root/grafana_tools/backup_and_sync/config',
-    line  => "db_password=${::profile_metrics_alerting::db_passwd}",
+    line  => "db_password=${profile_metrics_alerting::db_passwd}",
     match => '^db_password.*',
   }
   file_line { 'backup_and_sync/config db_user':
     path  => '/root/grafana_tools/backup_and_sync/config',
-    line  => "db_user=${::profile_metrics_alerting::db_user}",
+    line  => "db_user=${profile_metrics_alerting::db_user}",
     match => '^db_user.*',
   }
 
@@ -151,6 +157,16 @@ class profile_metrics_alerting::tools (
     path  => '/root/grafana_tools/ldap_sync/config',
     line  => "groups=(${ldap_groups_joined})",
     match => '^groups.*',
+  }
+  file_line { 'ldap_sync/config ldap_group_search_base':
+    path  => '/root/grafana_tools/ldap_sync/config',
+    line  => "ldap_group_search_base=\"${ldap_sync_group_search_base}\"",
+    match => '^ldap_group_search_base.*',
+  }
+  file_line { 'ldap_sync/config ldap_user_search_base':
+    path  => '/root/grafana_tools/ldap_sync/config',
+    line  => "ldap_user_search_base=\"${ldap_sync_user_search_base}\"",
+    match => '^ldap_user_search_base.*',
   }
 
   # white_label/config
@@ -202,5 +218,4 @@ class profile_metrics_alerting::tools (
       ensure => absent,
     }
   }
-
 }

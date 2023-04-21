@@ -22,9 +22,112 @@ include profile_metrics_alerting
 
 The following parameters need to be set in hiera:
 ```yaml
-profile_metrics_alerting::cilogon_client_id: "cilogon:/client_id/UNIQUEID"
-profile_metrics_alerting::cilogon_client_secret: "SECRETKEY"
-profile_metrics_alerting::db_passwd: "PASSWORD"
+profile_metrics_alerting::db_passwd: "PASSWORD"  # PREFERABLY ENCRYPTED
+```
+
+:warning:
+The following parameters are no longer supported: 
+`cilogon_client_id`, `cilogon_client_secret`, `grafana_server_root_url`, & `grafana_version`. 
+All Grafana parameters are now expected to be configured via hiera, etc.
+
+Additional hiera data for Grafana & MySQL also need to be set. Below is sample hiera data for these:
+```yaml
+grafana::cfg:
+  alerting:
+    enabled: true
+  analytics:
+    reporting: true
+  app_mode: "production"
+  auth:
+    login_maximum_inactive_lifetime_duration: "9h"
+    login_maximum_lifetime_duration: "7d"
+    disable_login_form: true
+    disable_signout_menu: true
+  "auth.anonymous":
+    enabled: true
+    hide_version: true
+    org_name: "NCSA"
+    org_role: "Viewer"
+  "auth.basic":
+    enabled: true
+  "auth.generic_oauth":
+    allow_assign_grafana_admin: true
+    allow_sign_up: true
+    api_url: "https://cilogon.org/oauth2/userinfo"
+    auth_url: "https://cilogon.org/authorize"
+    client_id: "cilogon_client_id"
+    client_secret: "cilogon_client_secret"
+    enabled: true
+    login_attribute_path: "uid"
+    name: "NCSA CILogon"
+    role_attribute_path: "contains(isMemberOf[*], 'ici_monitoring_admin') && 'Admin' || 'Viewer'"
+    scopes: "openid,email,profile,org.cilogon.userinfo"
+    token_url: "https://cilogon.org/oauth2/token"
+  "auth.ldap":
+#    allow_sign_up: true
+#    config_file: "/etc/grafana/ldap.toml"
+    enabled: false
+  database:
+    type: "mysql"
+    host: "127.0.0.1:3306"
+    name: "%{lookup('profile_metrics_alerting::db_name')}"
+    password: "%{lookup('profile_metrics_alerting::db_passwd')}"
+    user: "%{lookup('profile_metrics_alerting::db_user')}"
+  explore:
+    enabled: false
+  live:
+    allowed_origins: "*"
+  server:
+    http_port: 8080
+    root_url: "https://%{facts.fqdn}"
+  smtp:
+    enabled: true
+    from_address: "root@${$facts["fqdn"]}"
+    from_name: "${$facts["fqdn"]} Grafana Alerts"
+    host: "localhost:25"
+    skip_verify: true
+  users:
+    allow_sign_up: false
+    allow_org_create: false
+  version: "installed"
+
+grafana::ldap_cfg:
+  - servers:
+      - host: "ldap1.ncsa.illinois.edu"
+        port: 636
+        use_ssl: true
+        search_filter: "(&(objectClass=inetorgperson)(!(memberOf=cn=all_disabled_usr,ou=groups,dc=ncsa,dc=illinois,dc=edu)))"
+        search_base_dns: "['dc=ncsa,dc=illinois,dc=edu']"
+        #bind_dn: "ldap-bind@ncsa.illinois.edu"
+        #bind_password: "find_in_LastPass"
+      - host: "ldap2.ncsa.illinois.edu"
+        port: 636
+        use_ssl: true
+        search_filter: "(&(objectClass=inetorgperson)(!(memberOf=cn=all_disabled_usr,ou=groups,dc=ncsa,dc=illinois,dc=edu)))"
+        search_base_dns: "['dc=ncsa,dc=illinois,dc=edu']"
+        #bind_dn: "ldap-bind@ncsa.illinois.edu"
+        #bind_password: "find_in_LastPass"
+    servers.attributes:
+      name: "givenName"
+      surname: "sn"
+      username: "uid"
+      member_of: "memberOf"
+      email: "mail"
+    servers.group_mappings:
+      - group_dn: "cn=org_ici,ou=groups,dc=ncsa,dc=illinois,dc=edu"
+        org_role: "Viewer"
+      - group_dn: "cn=ici_monitoring_admin,ou=groups,dc=ncsa,dc=illinois,dc=edu"
+        org_role: "Admin"
+        grafana_admin: true
+
+profile_mysql_server::create_mysql_home: false
+profile_mysql_server::dbs:
+  "%{lookup('profile_metrics_alerting::db_name')}":
+    password: "%{lookup('profile_metrics_alerting::db_passwd')}"
+    user: "%{lookup('profile_metrics_alerting::db_user')}"
+    host: "localhost"
+    charset: "utf8mb4"
+    collate: "utf8mb4_general_ci"
 ```
 
 To make use of [grafana_tools](https://github.com/jdmaloney/grafana_tools/) 
@@ -45,6 +148,8 @@ profile_metrics_alerting::tools::ldap_sync_groups:
   - "group_one"
   - "group_two"
   - "etc"
+profile_metrics_alerting::tools::ldap_sync_group_search_base: "ou=groups,dc=example,dc=local"
+profile_metrics_alerting::tools::ldap_sync_user_search_base: "ou=people,dc=example,dc=local"
 profile_metrics_alerting::tools::whitelabel_subtitle: "Managed by ORGANIZATION GROUP"
 profile_metrics_alerting::tools::whitelabel_title: "Monitoring and Telemetry Interface"
 ```
@@ -77,50 +182,12 @@ scripts to do one of the following:
 
 ## Dependencies
 
+- [ncsa/profile_mysql_server](https://github.com/ncsa/puppet-profile_mysql_server)
 - [ncsa/sshd](https://github.com/ncsa/puppet-sshd)
 - [puppet/grafana](https://forge.puppet.com/modules/puppet/grafana)
 - [puppetlabs/mysql](https://forge.puppet.com/modules/puppetlabs/mysql)
 
 ## Reference
-
-### class profile_metrics_alerting::ssh (
--  Array[String] $metrics_node_ips,
--  String $sshkey_pub,
--  String $sshkey_priv,
--  String $sshkey_type,
-### class profile_metrics_alerting::tools (
--  String $backup_and_sync_cron_hour,
--  String $backup_and_sync_cron_minute,
--  String $backup_and_sync_cron_month,
--  String $backup_and_sync_cron_monthday,
--  String $backup_and_sync_cron_weekday,
--  String $backup_and_sync_destination_host,
--  String $backup_and_sync_destination_path,
--  Boolean $backup_and_sync_enable,
--  String $grafana_admin_password,
--  String $grafana_admin_user,
--  String $ldap_sync_base_dir,
--  String $ldap_sync_cron_hour,
--  String $ldap_sync_cron_minute,
--  String $ldap_sync_cron_month,
--  String $ldap_sync_cron_monthday,
--  String $ldap_sync_cron_weekday,
--  Boolean $ldap_sync_enable,
--  Array[String] $ldap_sync_groups,
--  String $whitelabel_subtitle,
--  String $whitelabel_title,
-### class profile_metrics_alerting::alert_cycle (
--  Hash $crons,
--  Boolean $enable_cycle_alerts,
--  String $script_path,
-### class profile_metrics_alerting (
--  String $cilogon_client_id,
--  String $cilogon_client_secret,
--  String $db_name,
--  String $db_passwd,
--  String $db_user,
--  String $grafana_server_root_url,
--  String $grafana_version,
 
 [REFERENCE.md](REFERENCE.md)
 
