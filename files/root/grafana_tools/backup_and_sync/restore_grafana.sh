@@ -9,7 +9,7 @@ source_file=$1
 source ./config
 
 ## Get Grafana backing DB type
-db_type=$(grep "^type = " /etc/grafana/grafana.ini | cut -d' '- f 3)
+db_type=$(grep "^type = " /etc/grafana/grafana.ini | cut -d' ' -f 3)
 
 if [ "${db_type}" == "sqlite3" ]; then
 	systemctl stop grafana-server

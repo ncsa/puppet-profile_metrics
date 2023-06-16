@@ -182,6 +182,7 @@ scripts to do one of the following:
 
 ## Dependencies
 
+- [ncsa/profile_backup](https://github.com/ncsa/puppet-profile_backup)
 - [ncsa/profile_mysql_server](https://github.com/ncsa/puppet-profile_mysql_server)
 - [ncsa/sshd](https://github.com/ncsa/puppet-sshd)
 - [puppet/grafana](https://forge.puppet.com/modules/puppet/grafana)
