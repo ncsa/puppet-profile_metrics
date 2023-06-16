@@ -8,6 +8,7 @@
 
 * [`profile_metrics_alerting`](#profile_metrics_alerting): Configure metrics grafana services
 * [`profile_metrics_alerting::alert_cycle`](#profile_metrics_alerting--alert_cycle): Pauses and starts (cycles) alerts on a schedule
+* [`profile_metrics_alerting::backup`](#profile_metrics_alerting--backup): Configure Grafana tools backups
 * [`profile_metrics_alerting::ssh`](#profile_metrics_alerting--ssh): Allow ssh between metrics servers
 * [`profile_metrics_alerting::tools`](#profile_metrics_alerting--tools): Install and configure grafana_tools
 
@@ -81,6 +82,18 @@ Enable or disable the cycling of alerts
 Data type: `String`
 
 Path to the alert_toggle.sh script
+
+### <a name="profile_metrics_alerting--backup"></a>`profile_metrics_alerting::backup`
+
+Configure Grafana tools backups
+
+#### Examples
+
+##### 
+
+```puppet
+include profile_metrics_alerting::backup
+```
 
 ### <a name="profile_metrics_alerting--ssh"></a>`profile_metrics_alerting::ssh`
 

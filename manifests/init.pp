@@ -26,6 +26,7 @@ class profile_metrics_alerting (
   include grafana
 
   include profile_metrics_alerting::alert_cycle
+  include profile_metrics_alerting::backup
   include profile_metrics_alerting::ssh
   include profile_metrics_alerting::tools
 }
