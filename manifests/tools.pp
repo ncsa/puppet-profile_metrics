@@ -131,12 +131,12 @@ class profile_metrics_alerting::tools (
 
   # bulk_alert/config
   file_line { 'bulk_alert/config user':
-    path  => '/root/grafana_tools/bulk_alert/config',
+    path  => '/root/grafana_tools/bulk_alert/unified_alerts/config',
     line  => "user=${grafana_admin_user}",
     match => '^user.*',
   }
   file_line { 'bulk_alert/config pass':
-    path  => '/root/grafana_tools/bulk_alert/config',
+    path  => '/root/grafana_tools/bulk_alert/unified_alerts/config',
     line  => "pass=${grafana_admin_password}",
     match => '^pass.*',
   }

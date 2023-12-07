@@ -154,23 +154,18 @@ profile_metrics_alerting::tools::whitelabel_subtitle: "Managed by ORGANIZATION G
 profile_metrics_alerting::tools::whitelabel_title: "Monitoring and Telemetry Interface"
 ```
 
-To pause/start alerts on a schedule (applicable for old style alerts only), you can use these parameters:
+To pause/start alerts on a schedule you can use these parameters:
 ```yaml
-# Format for command is similar to running alert_toggle.sh by hand, see README in files/root/grafana_tools
 profile_metrics_alerting::alert_cycle::crons:
-   "Pause mforgehn1 alerts":
-    command: "pause tag \"mforgehn1\""
-    hour: 21
+  "Silence mforgehn1 alerts (label=host)":
+    command: "auto_silence_root_cron \"Silence mforgehn1 alerts (label=host)\" host =~ \"mforgehn1.*\" now \"+45 min\""
+    # Will add a 45 min silence for any alert with a host label of mforgehn1.*
+    # See this repo for details on arguments for command: https://git.ncsa.illinois.edu/ici-monitoring/grafana-tools
+    hour: 23
     minute: 55
     weekday: 0
-  "Start mforgehn1 alerts":
-    command: "start tag \"mforgehn1\""
-    hour: 0
-    minute: 45
-    weekday: 1
 profile_metrics_alerting::alert_cycle::enable_cycle_alerts: true
 ```
-You'll want to define your crons for `profile_metrics_alerting::alert_cycle::crons` in any role that uses this repo (For example if you have a primary/secondary role). This is because if you swap roles you want the alert pausing/starting crons to be removed from the secondary role so you don't get alerts enabled in multiple places leading to duplicate alerts. 
 
 ## Initial Restoration of Grafana Database
 
